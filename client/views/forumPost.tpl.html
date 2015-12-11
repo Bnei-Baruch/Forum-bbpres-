@@ -1,16 +1,3 @@
-<script id="singleTopicTpl" type="text/x-handlebars-template">
-<div>
-	{{{getSinglForumPost}}}
-	<div class="replyListContainer" data-topic-index = {{index}}>
-		{{#each replyList}}
-			{{{getSinglForumPost}}}
-		{{/each}}
-		{{{getEditReply}}}		
-	</div>
-</div>
-</script>
-
-<script id="forumPostTpl" type="text/x-handlebars-template">
 <div class="forumItem"  data-topic-index = "{{topicId}}" data-item-index = "{{itemId}}" data-postType="{{type}}">
 	<div class="header">
 		<div class="photo">
@@ -43,18 +30,7 @@
 	</div>
 	{{/if}}
 </div>
-</script>
 
-<script id="attachmentsTpl" type="text/x-handlebars-template">
-<div class="single_topic_single_attachment">
-	<div class="attachment-image">
-		<a target="_blank" href="{{urlToFull}}"> {{{img}}} </a>
-	</div>
-	<div class="attachment-controls">
-		<a class="delete-attachment" href="#">Удалить</a>
-	</div>
-</div>
-</script>
 
 <script id="editTopicTpl" type="text/x-handlebars-template">	
 <div class="edit">
