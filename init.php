@@ -23,7 +23,20 @@ function RenderForumShortcode($args) {
 	if (! is_user_logged_in ()) {
 		return '<h1>test</h1>';
 	}
-	$str = '<div  ng-app="Forum" ><div ng-include="\'' . BBPRESS_FORUM_URL . '/client/index.html\'"></div></div>';
+	$str = '<link rel="stylesheet" type="text/css" href="' . BBPRESS_FORUM_URL . '/client/style.css">';
+	$str .= '<div  ng-app="Forum" ><div ng-include="\''.BBPRESS_FORUM_URL.'/client/views/ForumMain.tpl.html\'"></div></div>';
+
+	//Load angular app file
+	$str .= '<script type="text/javascript" src="' . BBPRESS_FORUM_URL . '/client/app.js"></script>';
+
+	//Load angular service files
+	$str .= '<script type="text/javascript" src="' . BBPRESS_FORUM_URL . '/client/services/httpSvc.js"></script>';
+	
+	//Load angular controller files
+	$str .= '<script type="text/javascript" src="' . BBPRESS_FORUM_URL . '/client/controllers/forumMainCtrl.js"></script>';
+	$str .= '<script type="text/javascript" src="' . BBPRESS_FORUM_URL . '/client/controllers/forumPost.js"></script>';
+	$str .= '<script type="text/javascript" src="' . BBPRESS_FORUM_URL . '/client/controllers/attachments.js"></script>';
+	
 	
 	return $str;
 }

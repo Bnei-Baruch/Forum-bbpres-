@@ -1,15 +1,15 @@
-(function() {
-	var app = angular.module("Forum", []);
+(function(app) {
 	app.controller('ForumMainCtrl', ForumMainCtrl);
 
-	ForumMainCtrl.$injector = ['ForumSVC'];
+	ForumMainCtrl.$injector = [ 'ForumSVC' ];
 
 	function ForumMainCtrl(forumSVC) {
 		var vm = this;
-		forumSVC.getForumId.then(function(data){
-			vm.test = data;			
+		vm.test = "testststst";
+		forumSVC.getForumId.then(function(data) {
+			vm.test = data;
 		});
 
 		return vm;
 	}
-}());
+}(angular.module("Forum")));

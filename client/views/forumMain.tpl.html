@@ -1,4 +1,5 @@
-<div  ng-controller="ForumMainCtrl as main">
+<div data-ng-controller="ForumMainCtrl as main">
+	{{main.test}}
 	<div class="topics_list_divider">
 		<?php _e('Недавние обсуждения', 'qode'); ?>
 	</div>
@@ -33,4 +34,3 @@
 	<a class="load_more_topics" href="#">Просмотреть больше обсуждений</a>
 	
 </div>
-<script type="text/javascript" src="<?php echo BBPRESS_FORUM_URL ?>/client/controllers/forumMainCtrl.js"></script>;
