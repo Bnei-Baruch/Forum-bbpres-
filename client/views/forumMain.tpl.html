@@ -1,5 +1,5 @@
 <div data-ng-controller="ForumMainCtrl as main">
-	{{main.test}}
+	{{$root.postId}}
 	<div class="topics_list_divider">
 		<?php _e('Недавние обсуждения', 'qode'); ?>
 	</div>
@@ -24,13 +24,16 @@
 				<div class="attachment"></div>
 				<div class="btn submit">
 					<?php _e('Publish', 'qode'); ?>
-					</button>
 				</div>
+			</div>
 		</form>
 	</div>
-	<div class="topics_list_single_topic"
+	<div ng-repeat="topic in main.topicList">
+	
+	</div>
+	<!-- <div class="topics_list_single_topic"
 		id="topic-<?php echo bbp_get_topic_id(); ?>"
 		data-id="<?php echo bbp_get_topic_id(); ?>"></div>
-	<a class="load_more_topics" href="#">Просмотреть больше обсуждений</a>
-	
+	<a class="load_more_topics" href="#">Просмотреть больше обсуждений</a> -->
+
 </div>

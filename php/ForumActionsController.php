@@ -14,47 +14,53 @@ class ForumActionsController {
 	);
 	
 	/**
-	 *
-	 * @param int $post_id:        	
-	 */
-	public function __construct($post_id) {
-		$this->buddypress_id = get_post_meta ( $post_id, 'buddypress_id', true );
-		$forumList = bbp_get_group_forum_ids ( $this->buddypress_id );
-		$this->forumId = ! empty ( $forumList ) ? $forumList [0] : null;
-		$this->addActions ();
-	}
-	/**
 	 * init AJAX actions
 	 */
-	private function addActions() {
+	public function __construct() {
 		foreach ( $this->actionsNameList as $action ) {
 			add_action ( 'wp_ajax_Forum_' . $action, function () {
-				$this->$action();
-			} );
+				$method = str_replace("Forum_", "", $_REQUEST['action']);
+				$result = $this->$method();
+				wp_die ( json_encode ( $result ) );
+			}, 99 );
 		}
 	}
 	/**
-	 * *
+	 * Define, if need, and return forum id (by $_REQUEST['postId'])
+	 * @return int - id of current forum
+	 */
+	private function defineForumId() {
+		if($this->forumId != -1)
+			return $this->forumId;
+		
+		$buddypress_id = get_post_meta ( $_REQUEST['postId'], 'buddypress_id', true );
+		$forumList = bbp_get_group_forum_ids ( $buddypress_id );
+		$forumId = ! empty ( $forumList ) ? $forumList [0] : null;
+		$this->forumId = $forumId;
+		return $forumId;
+	}
+	/**
 	 * get current forum id
 	 */
 	public function GetForumId() {
-		return $this->forumId;
+		$forumId = $this->defineForumId();
+		return $forumId;
 	}
 	
 	/**
-	 * Get current forul topics
+	 * Get current forum topics
 	 *
 	 * @return json:list of topics
 	 */
-	public function GetTopicsOfForum() {
-		if (is_null ( $_POST ['param'] ) || empty ( $_POST ['param'] ))
-			$this->_die ();
+	public function GetTopicsByForum() {
+
+		$forumId = $_POST ['forumId'];
 		
 		$return = array ();
-		$loadFrom = empty ( $_POST ['param'] ['from'] ) ? 0 : $_POST ['param'] ['from'];
-		$loadTo = empty ( $_POST ['param'] ['to'] ) ? 0 : $_POST ['param'] ['to'];
+		$loadFrom = empty ( $_POST ['from'] ) ? 0 : $_POST ['from'];
+		$loadTo = $loadFrom + 20;
 		$param = array (
-				'post_parent' => $this->forumId,
+				'post_parent' => $forumId,
 				'post_type' => 'topic',
 				'post_status' => 'publish',
 				'orderby' => 'date' 
@@ -79,7 +85,7 @@ class ForumActionsController {
 			$returnItem ['replyList'] = $this->getReplyList ( $topicId );
 			$return [] = $returnItem;
 		}
-		wp_die ( json_encode ( $return ) );
+		return $return;
 	}
 	/**
 	 *

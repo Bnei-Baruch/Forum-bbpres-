@@ -1,9 +1,6 @@
 (function(app) {
 
 	app.factory('ForumSVC', ForumSVC);
-
-	ForumSVC.$injector = [ '$http' ];
-
 	function ForumSVC($http) {
 		return {
 			getForumId : getForumId,
@@ -22,21 +19,16 @@
 			updateAttachList : updateAttachList
 		};
 
-		function getRepliesByTopic(id) {
-			var data = {
-				topicId : id
+		function getTopicsByForum(data) {
+			var defData = {
+				forumId : -1, 
+				from: 0
 			};
+			angular.extend(data, defData);
 			return _sentToServer('GetTopicsByForum', data);
 		}
-
-		function getTopicsByForum(id) {
-			var data = {
-				forumId : id
-			};
-			return _sentToServer('GetTopicsByForum', data);
-		}
-		function getForumId() {
-			return _sentToServer('GetForumId', {});
+		function getForumId(postId) {
+			return _sentToServer('GetForumId', {postId: postId});
 		}
 		function getTranslationList() {
 			return _sentToServer('GetTranslationList', {});
@@ -57,12 +49,16 @@
 		}
 
 		function _sentToServer(method, data) {
-			var url = window.ajax_url;
 			var defData = {
-				action : 'Forum_' + method
+					"action" : "Forum_" + method
 			};
 			angular.extend(data, defData);
-			return $http.post(url, data).then(function(r) {
+			var param = {
+					method: "POST",
+					url: window.ajaxurl,
+					data: data					
+			}
+			return $http(param, data).then(function(r) {
 				return r.data;
 			});
 		}

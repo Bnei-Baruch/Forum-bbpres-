@@ -1,9 +1,8 @@
 (function(app) {
-	app.controller('ForumMainCtrl', ForumMainCtrl);
+	app.controller('ForumTopicCtrl', ForumTopicCtrl);
 
-	function ForumMainCtrl(ForumSVC, $rootScope) {
+	function ForumTopicCtrl(ForumSVC, $rootScope) {
 		var vm = this;
-		vm.topicList = [];
 		_init();
 		return vm;
 

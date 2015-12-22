@@ -1,4 +1,62 @@
-<div>
+<div class="forumItem topic" ng-controller = "ForumTopicCtrl as topic">
+	<div class="header">
+		<div class="photo">
+			<a href="{{topic.autor.url}}"> {{topic.autor.avatar}} </a>
+		</div>
+		<div class="info">
+			<div class="name">
+				<a href="{{topic.autor.url}}"> {{topic.autor.name}} </a>
+			</div>
+			<div class="date">{{topic.sDate}}</div>
+		</div>
+	</div>
+	<div class="forumItemCont">
+		{{topic.sContentShort}}
+		<div style="display: none;">{{topic.sContent}}</div>
+	</div>
+
+	<div class="attachment" ng-repeat="attach in topic.attachmentList">
+		<div ng-include=""></div>
+	</div>
+	<div class="actions" ng-if="topic.like">
+		<a class="like" href="#">{{topic.translation.like}}</a>
+		<a class="like dislike" href="#">{{topic.translation.dislike}}</a>
+		<div class="like-count">
+			<i class="like-img"></i><span class="count">{{topic.like}}</span>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div>
 	{{getSinglForumPost}}
 	<div class="replyListContainer" data-topic-index = {{index}}>
 		{{#each replyList}}
@@ -6,4 +64,4 @@
 		{{/each}}
 		{{{getEditReply}}}		
 	</div>
-</div>
+</div> -->
