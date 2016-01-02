@@ -1,32 +1,21 @@
 (function(app) {
-	app.controller('ForumTopicCtrl', ForumTopicCtrl);
+	app.controller('ForumTopicCtrl', Controller);
 
-	function ForumTopicCtrl(ForumSVC, $rootScope) {
+	function Controller(ForumSVC, $rootScope, $scope) {
 		var vm = this;
-		_init();
+		vm.loadMoreReply = loadMoreReply;
 		return vm;
 
-		function _init() {
-			ForumSVC.getForumId($rootScope.postId).then(function(data) {
-				vm.forumId = data;
-			});
-		}
-		function loadMoreTopic() {
+		function loadMoreReply() {		
 			var param = {
-				from : vm.topicList.length || 0,
-				forumId: vm.forumId
+				from : $scope.topic.replyList.length || 0,
+				topicId: $scope.topic.id,
+				
 			}
-			ForumSVC.getTopicsByForum(param).then(function(data) {
-				data.forEach(function(topic){
-					/*topic.replyList = []; 
-					var replyParam = {
-						from : 0,
-						topicId: data.id							
-					}					
-					ForumSVC.getTopicsByForum(replyParam).then(function(data) {
-						topic.replyList = data;
-					});*/
-					vm.topicList.push(topic);					
+			ForumSVC.getRepliesByTopic(param).then(function(data) {
+				$scope.topic.hasMoreTopics = data.hasMoreTopics;
+				data.replyList.forEach(function(reply){
+					$scope.topic.replyList.push(reply);					
 				});
 			});
 

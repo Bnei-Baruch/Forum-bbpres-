@@ -1,0 +1,10 @@
+<form class="row editPost">
+	<div class="photo col-xs-1">
+		<a href="{{post.autor.url}}" ng-bind-html="post.autor.avatar"></a>
+	</div>
+	<div class="col-xs-11">
+		<textarea ng-model="post.contentShort" placeholder="Введите текст сообщения..." name="content" required="required"></textarea>
+		<a class="image-load" href="#"></a> <a href="#" class="smiles_open"></a>
+		<div class="add_reply_form_files"></div>
+	</div>
+</form>

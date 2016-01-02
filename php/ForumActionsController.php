@@ -19,21 +19,22 @@ class ForumActionsController {
 	public function __construct() {
 		foreach ( $this->actionsNameList as $action ) {
 			add_action ( 'wp_ajax_Forum_' . $action, function () {
-				$method = str_replace("Forum_", "", $_REQUEST['action']);
-				$result = $this->$method();
+				$method = str_replace ( "Forum_", "", $_REQUEST ['action'] );
+				$result = $this->$method ();
 				wp_die ( json_encode ( $result ) );
 			}, 99 );
 		}
 	}
 	/**
 	 * Define, if need, and return forum id (by $_REQUEST['postId'])
+	 * 
 	 * @return int - id of current forum
 	 */
 	private function defineForumId() {
-		if($this->forumId != -1)
+		if ($this->forumId != - 1)
 			return $this->forumId;
 		
-		$buddypress_id = get_post_meta ( $_REQUEST['postId'], 'buddypress_id', true );
+		$buddypress_id = get_post_meta ( $_REQUEST ['postId'], 'buddypress_id', true );
 		$forumList = bbp_get_group_forum_ids ( $buddypress_id );
 		$forumId = ! empty ( $forumList ) ? $forumList [0] : null;
 		$this->forumId = $forumId;
@@ -43,7 +44,7 @@ class ForumActionsController {
 	 * get current forum id
 	 */
 	public function GetForumId() {
-		$forumId = $this->defineForumId();
+		$forumId = $this->defineForumId ();
 		return $forumId;
 	}
 	
@@ -53,39 +54,37 @@ class ForumActionsController {
 	 * @return json:list of topics
 	 */
 	public function GetTopicsByForum() {
-
 		$forumId = $_POST ['forumId'];
-		
 		$return = array ();
 		$loadFrom = empty ( $_POST ['from'] ) ? 0 : $_POST ['from'];
-		$loadTo = $loadFrom + 20;
 		$param = array (
-				'post_parent' => $forumId,
+				'posts_per_page' => 1,
+				// 'paged'=>$loadFrom/5,
+				'paged' => 2,
+				'post_parent' => ( string ) $forumId,
 				'post_type' => 'topic',
 				'post_status' => 'publish',
 				'orderby' => 'date' 
 		);
 		
-		$querty = new WP_Query ( $param );
-		if (! have_posts ( $querty ))
-			$this->_die ();
+		$query = new WP_Query ( $param );
+		$postList = $query->query ( $param );
 		
-		while ( the_post () ) {
-			$post = next_post ();
-			$topicId = bbp_get_topic_id ();
-			/**
-			 * *******************
-			 * need build request by $post
-			 *
-			 * ***************************
-			 */
-			$topic = new ForumBbpAjaxIntegratorPost ( $topicId, 'topic' );
-			
-			$returnItem = $topic->getPostData ();
-			$returnItem ['replyList'] = $this->getReplyList ( $topicId );
-			$return [] = $returnItem;
+		foreach ( $postList as $topicPost ) {
+			$topic = ForumPostIntegrator::getData ( $topicPost );
+			$replyObj = $this->GetRepliesByTopic ( $topicPost->ID );
+			$topic ['replyList'] = $replyObj ["replyList"];
+			$topic ['hasMoreReplies'] = $replyObj ["hasMoreReplies"];
+			$return [] = $topic;
 		}
-		return $return;
+		$param ["paged"] ++;
+		$queryNext = new WP_Query ( $param );
+		$hasMoreTopics = count ( $query->query ( $param ) ) > 0;
+		
+		return array (
+				"topicList" => $return,
+				"hasMoreTopics" => $hasMoreTopics 
+		);
 	}
 	/**
 	 *
@@ -94,22 +93,37 @@ class ForumActionsController {
 	 * @return json:list of replies
 	 */
 	public function GetRepliesByTopic($topicId = -1) {
-		$topicId = ($topicId == - 1) ? $_POST ['param'] ['topicId'] : $topicId;
-		$loadFrom = empty ( $_POST ['param'] ['from'] ) ? 0 : $_POST ['param'] ['from'];
-		$loadTo = empty ( $_POST ['param'] ['to'] ) ? 0 : $_POST ['param'] ['to'];
-		$return = array ();
+		$topicId = ($topicId == - 1) ? $_POST ['topicId'] : $topicId;
+		if (empty ( $topicId ))
+			$this->_die ( "Not defined topic ID." );
+		
+		$loadFrom = empty ( $_POST ['from'] ) ? 0 : $_POST ['from'];
+		$replyList = array ();
+		
 		$param = array (
-				'post_parent' => $topicId,
-				'post_type' => 'reply' 
+				'post_type' => 'reply',
+				'posts_per_page' => 5,
+				'paged' => $loadFrom / 5,
+				'post_parent' => ( string ) $topicId,
+				'post_status' => 'publish',
+				'orderby' => 'date' 
 		);
-		if (! bbp_has_replies ( $param ))
-			$this->_die ();
-		while ( bbp_replies () ) {
-			bbp_the_reply ();
-			$reply = new ForumBbpAjaxIntegratorPost ( bbp_get_reply_id (), 'reply' );
-			$return [] = $reply->getPostData ();
+		$query = new WP_Query ( $param );
+		$postList = $query->query ( $param );
+		
+		foreach ( $postList as $replyPost ) {
+			$reply = ForumPostIntegrator::getData ( $replyPost );
+			$replyList [] = $reply;
 		}
-		return $return;
+		// check if has more replies
+		$param ["paged"] ++;
+		$queryNext = new WP_Query ( $param );
+		$hasMoreReplies = count ( $query->query ( $param ) ) > 0;
+		
+		return array (
+				"replyList" => $replyList,
+				"hasMoreReplies" => $hasMoreReplies 
+		);
 	}
 	/**
 	 * *

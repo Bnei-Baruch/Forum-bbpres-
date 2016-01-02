@@ -1,39 +1,28 @@
-<div data-ng-controller="ForumMainCtrl as main">
-	{{$root.postId}}
+<div data-ng-controller="ForumMainCtrl as main" class="row">
 	<div class="topics_list_divider">
 		<?php _e('Недавние обсуждения', 'qode'); ?>
 	</div>
 	<div id="popUpForum"></div>
-	<span class="button big" id=test>tsts</span>
-
-	<div class="add_topic_form_container">
-		<form action="" method="post"
-			data-bbp_forum_id="<?php echo $forum_id ?>">
-			<div class="add_topic_form_header">
-				<div class="publication">
-					<i class="icon"></i>
-					<?php _e('Publication', 'qode'); ?>
-				</div>
-			</div>
-			<div class="add_topic_form">
-				<textarea
-					placeholder="<?php _e('Введите текст сообщения...', 'qode'); ?>"
-					name="content"></textarea>
-			</div>
-			<div class="add_topic_form_actions">
-				<div class="attachment"></div>
-				<div class="btn submit">
-					<?php _e('Publish', 'qode'); ?>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div ng-repeat="topic in main.topicList">
 	
-	</div>
-	<!-- <div class="topics_list_single_topic"
-		id="topic-<?php echo bbp_get_topic_id(); ?>"
-		data-id="<?php echo bbp_get_topic_id(); ?>"></div>
-	<a class="load_more_topics" href="#">Просмотреть больше обсуждений</a> -->
-
+	<div class="edit" forum-edit-post post=""></div>
+	
+<!--
+	<form action="" method="post"
+		data-bbp_forum_id="<?php echo $forum_id ?>">
+		<div class="add_topic_form_header">
+			<div class="publication">
+				<i class="icon"></i>
+				<?php _e('Publication', 'qode'); ?>
+			</div>
+		</div>
+		<textarea class="col-xs-12"
+			placeholder="<?php _e('Введите текст сообщения...', 'qode'); ?>"
+			name="content"></textarea>
+	
+		<button class="btn btn-primary btn-lg"></button>
+	</form>
+-->	
+	<div ng-repeat="topic in main.topicList"
+		ng-include="$root.baseTplUrl + 'singleTopic.tpl.html'"></div>
+	<span ng-if="main.hasMoreTopics" ng-click="main.loadMoreTopic()">Просмотреть больше обсуждений</span>
 </div>

@@ -24,8 +24,16 @@
 				forumId : -1, 
 				from: 0
 			};
-			angular.extend(data, defData);
+			angular.extend(defData, data);
 			return _sentToServer('GetTopicsByForum', data);
+		}
+		function getRepliesByTopic(data) {
+			var defData = {
+				topicId : -1, 
+				from: 0
+			};
+			angular.extend(defData, data);
+			return _sentToServer('GetRepliesByTopic', data);
 		}
 		function getForumId(postId) {
 			return _sentToServer('GetForumId', {postId: postId});
@@ -49,10 +57,7 @@
 		}
 
 		function _sentToServer(method, data) {
-			var defData = {
-					"action" : "Forum_" + method
-			};
-			angular.extend(data, defData);
+			data.action = "Forum_" + method;
 			var param = {
 					method: "POST",
 					url: window.ajaxurl,

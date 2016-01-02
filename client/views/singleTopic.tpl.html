@@ -1,67 +1,42 @@
-<div class="forumItem topic" ng-controller = "ForumTopicCtrl as topic">
-	<div class="header">
-		<div class="photo">
-			<a href="{{topic.autor.url}}"> {{topic.autor.avatar}} </a>
+<div class="forumItem topic" ng-controller="ForumTopicCtrl as topicVm">
+	<div class="header row">
+		<div class="photo col-xs-2">
+			<a href="{{topic.autor.url}}" ng-bind-html="topic.autor.avatar"></a>
 		</div>
-		<div class="info">
+		<div class="info col-xs-10">
 			<div class="name">
 				<a href="{{topic.autor.url}}"> {{topic.autor.name}} </a>
 			</div>
-			<div class="date">{{topic.sDate}}</div>
+			<div class="date">{{topic.createDate | date}}</div>
+			<div ng-show="!topic.isEdit">
+				<p ng-bind-html="topic.contentShort" ng-if="!topic.showFullContent"></p>
+				<p ng-bind-html="topic.contentShort" ng-if="topic.showFullContent"></p>
+				<div ng-click="topic.showFullContent = !topic.showFullContent">
+					show/hide fuul content
+					</p>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="forumItemCont">
-		{{topic.sContentShort}}
-		<div style="display: none;">{{topic.sContent}}</div>
-	</div>
+	<div class="edit" forum-edit-post post="topic" ng-if="topic.isEdit"></div>
 
 	<div class="attachment" ng-repeat="attach in topic.attachmentList">
 		<div ng-include=""></div>
 	</div>
+
+
 	<div class="actions" ng-if="topic.like">
-		<a class="like" href="#">{{topic.translation.like}}</a>
-		<a class="like dislike" href="#">{{topic.translation.dislike}}</a>
+		<a class="like" href="#">{{topic.translation.like}}</a> <a
+			class="like dislike" href="#">{{topic.translation.dislike}}</a>
 		<div class="like-count">
 			<i class="like-img"></i><span class="count">{{topic.like}}</span>
 		</div>
 	</div>
-</div>
+	<div style="margin-left: 40px;">
+		<div ng-repeat="reply in topic.replyList"
+			ng-include="$root.baseTplUrl + 'singleReply.tpl.html'"></div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <div>
-	{{getSinglForumPost}}
-	<div class="replyListContainer" data-topic-index = {{index}}>
-		{{#each replyList}}
-			{{{getSinglForumPost}}}
-		{{/each}}
-		{{{getEditReply}}}		
+		<span ng-if="topic.hasMoreReplies"
+			ng-click="topicVm.loadMoreReply(topic.id)">Просмотреть больше
+			reply</span>
 	</div>
-</div> -->
+</div>

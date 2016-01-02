@@ -93,22 +93,6 @@
 	position: relative;
 }
 
-.forumItem .photo {
-	display: table-cell;
-	vertical-align: middle;
-	width: 40px;
-}
-
-.forumItem .info {
-	display: table-cell;
-	vertical-align: middle;
-	line-height: 1.4;
-	padding-left: 8px;
-}
-
-.forumItem .photo img {
-	vertical-align: middle;
-}
 
 .forumItem .actions {
 	margin-top: 10px;
@@ -166,12 +150,6 @@
 
 .single_topic_reply_form form {
 	display: table-row;
-}
-
-.single_topic_reply_form .photo {
-	display: table-cell;
-	vertical-align: top;
-	width: 32px;
 }
 
 .single_topic_reply_form .reply-form {
@@ -589,4 +567,12 @@
 .single_topic_single_attachment .attachment-image img,
 	.single_reply_single_attachment .attachment-image img {
 	display: block;
+}
+
+
+
+/**New style*/
+
+.editPost textarea{
+	min-width: 100%;
 }

@@ -76,14 +76,10 @@ class ForumBbpAjaxIntegrator {
 	}
 }
 class ForumBbpAjaxIntegratorPost {
-	private $postId = - 1;
-	private $postType;
-	private $autorId;
-	public function __construct($postId, $type) {
-		$this->postId = $postId;
-		$this->postType = $type;
-		$fooName = 'bbp_get_' . $this->postType . '_author_id';
-		$this->autorId = $fooName ( $this->postId );
+	private $postItem;
+	
+	public function __construct($post) {
+		$this->postItem = $post;
 	}
 	public function addPost() {
 	}
